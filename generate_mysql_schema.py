@@ -75,7 +75,8 @@ def main(args):
         colnames.append(colname)
         field_names.append("`%s` %s%s DEFAULT NULL" % (colname, col_type, col_meta))
 
-    print "CREATE TABLE `%s` (\n %s\n) ENGINE=MyISAM DEFAULT CHARSET=latin1;" % (table_name, ",\n ".join(field_names))
+    epilog = '' if args.sqlite else "ENGINE=MyISAM DEFAULT CHARSET=latin1"
+    print "CREATE TABLE `%s` (\n %s\n) %s;" % (table_name, ",\n ".join(field_names), epilog)
 
 if __name__ == '__main__':
     INFO = """Generates MySQL create statement from file (tsv or csv) using header as column names. Inspired by Nick Tatonetti's tableize"""
@@ -84,5 +85,6 @@ if __name__ == '__main__':
     parser.add_argument('input', help='Input file; may be gzipped')
     parser.add_argument('--table', '-t', help='Table name (default: <input>)')
     parser.add_argument('--enum', help='Use enums where possible', action='store_true')
+    parser.add_argument('--sqlite', help='Create statement for sqlite instead of MySQL', action='store_true')
     args = parser.parse_args()
     main(args)
